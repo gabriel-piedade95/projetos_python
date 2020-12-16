@@ -4,13 +4,15 @@ from componentes import Botao, Tela, Pilha
 cor_de_fundo = (100, 100, 100)
 cor1 = (150, 150, 150)
 preto = (0, 0, 0)
+vermelho = (200, 30, 30)
+verde = (40, 200, 40)
 cor_texto = (150, 30, 30)
 cor_hora = (20, 210, 20)
-(largura, altura) = (300, 300)
+(largura, altura) = (300, 360)
 
 def prioridade(op1, op2):
 
-	prd = {"X" : 3, "/" : 3, "+": 2, "-": 2, "(": 1}
+	prd = {"^": 4, "X" : 3, "/" : 3, "+": 2, "-": 2, "(": 1}
 
 	if(prd[op1] <= prd[op2]):
 		return(0)
@@ -26,7 +28,7 @@ def posfixa(expressao):
 	aux = []
 	num = "0"
 	i = 0
-	operadores = ["X", "/", "+", "-"]
+	operadores = ["X", "/", "+", "-", "^"]
 	while i < len(expr):
 		
 		if expr[i].isdigit() or expr[i] == ".":
@@ -82,6 +84,10 @@ def resolve_posfixa(lista):
 			pilha.append(lista[i])
 			k += 1
 
+		if lista[i] == "^":
+			pilha[k - 1] = pilha[k - 1] ** pilha.pop(k)
+			k -= 1
+
 		if lista[i] == "X":
 			pilha[k - 1] = pilha[k -1] * pilha.pop(k)
 			k -= 1
@@ -120,7 +126,7 @@ botoes_n.append(Botao(".", ((20 + (j+1) *50), 40 + altura), janela, cor1))
 
 botoes_c = []
 num = 0
-lista_botoes_c = ["+", "-", "X", "/", "(", ")", "=", "c"]
+lista_botoes_c = ["+", "-", "X", "/", "(", ")", "^", "c"]
 for i in range(0, 4):
 	altura = 50 * (i + 1)
 	for j in range(0, 2):
@@ -129,12 +135,16 @@ for i in range(0, 4):
 			break
 		else:
 			num += 1
-
+ans = Botao("A", ((190), 95 + altura), janela, verde)
+igual = Botao("=", ((190 + j * 50), 95 + altura), janela, vermelho)
+botoes_c.append(ans)
+botoes_c.append(igual)
 
 tela = Tela("", (25, 10), janela)
 pilha = Pilha()
 rodar = True
 imprime = True
+res_ant = 0
 while(rodar):
 
 	if imprime:
@@ -161,18 +171,24 @@ while(rodar):
 				if botao_n.ret.collidepoint(mouse):
 					pilha.empilha(botao_n.nome)
 
-			for i in range(0, 6):
+			for i in range(0, 7):
 
 				if botoes_c[i].ret.collidepoint(mouse):
 					pilha.empilha(botoes_c[i].nome)
 
 
-			if botoes_c[6].ret.collidepoint(mouse):
+			if botoes_c[7].ret.collidepoint(mouse):
+				pilha.limpa()
+
+			if botoes_c[8].ret.collidepoint(mouse):
+				pilha.empilha(res_ant) 
+
+			if botoes_c[9].ret.collidepoint(mouse):
 				try: 
 					expr = posfixa(pilha.apresenta())
 					res = resolve_posfixa(expr)
-					tela.texto = (str(round(res, 9)))
-
+					tela.texto = str(round(res, 9))
+					res_ant = str(round(res, 9))
 
 				except ZeroDivisionError:
 					tela.texto = "DIV/0!"
@@ -182,10 +198,6 @@ while(rodar):
 
 				pilha.limpa()
 				imprime = False
-
-
-			if botoes_c[7].ret.collidepoint(mouse):
-				pilha.limpa()
 
 	pygame.display.update()	
 
