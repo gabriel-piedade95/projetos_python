@@ -29,11 +29,11 @@ def posfixa(expressao):
 	operadores = ["X", "/", "+", "-"]
 	while i < len(expr):
 		
-		if expr[i].isdigit():
+		if expr[i].isdigit() or expr[i] == ".":
 			num += expr[i]
 		else:
 			if(num != "0"):
-				aux.append(int(num))
+				aux.append(float(num))
 				num = "0"
 
 			if expr[i] in operadores:
@@ -61,7 +61,7 @@ def posfixa(expressao):
 				pos_f.pop(topo)
 		i += 1
 	if num != "0":
-		aux.append(int(num))
+		aux.append(float(num))
 	topo = len(pos_f) - 1
 	while (topo >= 0):
 		x = pos_f.pop(topo)
@@ -78,7 +78,7 @@ def resolve_posfixa(lista):
 	for i in range(0, len(lista)):
 		
 		
-		if type(lista[i]) == int:
+		if type(lista[i]) == float:
 			pilha.append(lista[i])
 			k += 1
 
@@ -116,6 +116,7 @@ for i in range(0, 4):
 			break
 		else:
 			num = (num + 1)%10
+botoes_n.append(Botao(".", ((20 + (j+1) *50), 40 + altura), janela, cor1))
 
 botoes_c = []
 num = 0
@@ -133,9 +134,11 @@ for i in range(0, 4):
 tela = Tela("", (25, 10), janela)
 pilha = Pilha()
 rodar = True
+imprime = True
 while(rodar):
 
-	tela.texto = pilha.apresenta()
+	if imprime:
+		tela.texto = pilha.apresenta()
 	tela.display()
 
 	for botao_n in botoes_n:
@@ -150,6 +153,8 @@ while(rodar):
 
 		if (evento.type == pygame.MOUSEBUTTONDOWN):
 			mouse = evento.pos
+			if imprime == False:
+				imprime = True
 
 			for botao_n in botoes_n:
 
@@ -163,10 +168,21 @@ while(rodar):
 
 
 			if botoes_c[6].ret.collidepoint(mouse):
-				expr = posfixa(pilha.apresenta())
-				res = resolve_posfixa(expr)
+				try: 
+					expr = posfixa(pilha.apresenta())
+					res = resolve_posfixa(expr)
+					tela.texto = (str(round(res, 9)))
+
+
+				except ZeroDivisionError:
+					tela.texto = "DIV/0!"
+					
+				except:
+					tela.texto = "ERRO!"
+
 				pilha.limpa()
-				pilha.empilha(str(int(res)))
+				imprime = False
+
 
 			if botoes_c[7].ret.collidepoint(mouse):
 				pilha.limpa()
