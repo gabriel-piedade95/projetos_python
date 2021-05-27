@@ -7,17 +7,17 @@ import random as rand
 
 root = Tk()
 
-
 velocidade = StringVar()
 vel_lista = ['Rápido', 'Médio', 'Lento']
 
 ordenacoes = StringVar()
-ord_lista = ['Merge Sort', 'Bubble Sort', 'Insertion Sort', 'Quick Sort']
+ord_lista = ['Merge Sort', 'Bubble Sort', 'Insertion Sort', 'Quick Sort',
+'Heap Sort', 'Selection Sort']
 
 def numeros_aleatorios():
 	
 	global lista
-	lista = [rand.randint(180, 800) for i in range(100)]
+	lista = [rand.randint(250, 800) for i in range(100)]
 	cria_retangulos(lista, ['red' for x in range(0, len(lista))])
 	
 
@@ -149,6 +149,69 @@ def quick_sort(inicio, fim, lista, velocidade):
 
 	cria_retangulos(lista, ['green' for x in range(0, len(lista))])
 
+
+def selectionSort(lista, velocidade):
+
+	tam = len(lista)
+	for i in range(0, tam -1):
+		menor = i
+
+		j = i + 1
+
+		while j < tam:
+
+			if lista[j] < lista[menor]:
+				menor = j
+
+			j += 1
+
+		if i != menor:
+			aux = lista[i]
+			lista[i] = lista[menor]
+			lista[menor] = aux
+		
+		cria_retangulos(lista, ['green' if x == menor else 'red' for x in range(0, len(lista))])
+		time.sleep(velocidade)
+	cria_retangulos(lista, ['green' for x in range(0, len(lista))])
+	
+
+def heapifica(lista, n, i):
+
+	maior = i
+
+	esq = (2 * i) + 1
+	drt = (2 * i) + 2
+
+	if esq < n  and lista[maior] < lista[esq]:
+		maior = esq
+
+	if drt < n and lista[maior] < lista[drt]:
+		maior = drt
+
+	if maior != i:
+
+		aux = lista[maior]
+		lista[maior] = lista[i]
+		lista[i] = aux
+
+		heapifica(lista, n, maior)
+
+
+def heapSort(lista):
+
+	n = len(lista)
+
+	for i in range(n//2 - 1, -1, -1):
+		heapifica(lista, n, i)
+
+	for j in range(n - 1, 0, -1):
+		aux = lista[j]
+		lista[j] = lista[0]
+		lista[0] = aux
+		heapifica(lista, j, 0)
+
+
+
 def escolhe_velocidade():
 
 	if vel_selecao.get() == 'Rápido':
@@ -178,6 +241,9 @@ def roda_orednacao():
 
 	elif ord_selecao.get() == 'Quick Sort':
 		quick_sort(0, len(lista) - 1, lista, velocidade)
+
+	elif ord_selecao.get() == 'Selection Sort':
+		selectionSort(lista, velocidade)
 
 
 U_Frame = Frame(root, width = 800, height = 250)
