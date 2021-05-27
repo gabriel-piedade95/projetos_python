@@ -173,7 +173,7 @@ def selectionSort(lista, velocidade):
 		cria_retangulos(lista, ['green' if x == menor else 'red' for x in range(0, len(lista))])
 		time.sleep(velocidade)
 	cria_retangulos(lista, ['green' for x in range(0, len(lista))])
-	
+
 
 def heapifica(lista, n, i):
 
@@ -197,20 +197,25 @@ def heapifica(lista, n, i):
 		heapifica(lista, n, maior)
 
 
-def heapSort(lista):
+
+def heapSort(lista, velocidade):
 
 	n = len(lista)
 
 	for i in range(n//2 - 1, -1, -1):
 		heapifica(lista, n, i)
+		cria_retangulos(lista, ['green' if x == i else 'red' for x in range(0, len(lista))])
+		time.sleep(velocidade)
 
 	for j in range(n - 1, 0, -1):
 		aux = lista[j]
 		lista[j] = lista[0]
 		lista[0] = aux
 		heapifica(lista, j, 0)
+		cria_retangulos(lista, ['green' if x == j else 'red' for x in range(0, len(lista))])
+		time.sleep(velocidade)
 
-
+	cria_retangulos(lista, ['green' for x in range(0, len(lista))])
 
 def escolhe_velocidade():
 
@@ -244,6 +249,9 @@ def roda_orednacao():
 
 	elif ord_selecao.get() == 'Selection Sort':
 		selectionSort(lista, velocidade)
+
+	elif ord_selecao.get() == 'Heap Sort':
+		heapSort(lista, velocidade)
 
 
 U_Frame = Frame(root, width = 800, height = 250)
