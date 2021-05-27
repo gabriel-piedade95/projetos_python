@@ -17,7 +17,8 @@ ord_lista = ['Merge Sort', 'Bubble Sort', 'Insertion Sort', 'Quick Sort',
 def numeros_aleatorios():
 	
 	global lista
-	lista = [rand.randint(250, 800) for i in range(100)]
+	lista = [x for x in range(150, 750, 6)]
+	rand.shuffle(lista)
 	cria_retangulos(lista, ['red' for x in range(0, len(lista))])
 	
 
@@ -216,6 +217,8 @@ def heapSort(lista, velocidade):
 		time.sleep(velocidade)
 
 	cria_retangulos(lista, ['green' for x in range(0, len(lista))])
+
+
 
 def escolhe_velocidade():
 
